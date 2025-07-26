@@ -1,0 +1,77 @@
+<!-- src/app/components/booking/booking.html -->
+<div class="booking-container">
+  <div class="header">
+    <h1 class="movie-title">Avengers: Endgame</h1>
+    <div class="movie-details">PVR Cinemas | Today | 7:30 PM</div>
+  </div>
+  <div class="booking-controls">
+    <div class="seat-selector">
+      <label for="seatCount">Number of Seats:</label>
+      <input
+        type="number"
+        id="seatCount"
+        class="seat-count-input"
+        min="1"
+        max="10"
+        [(ngModel)]="seatCount"
+        (ngModelChange)="onSeatCountChange()"
+      />
+    </div>
+    <div class="price-display">Total: ₹{{ totalPrice }}</div>
+  </div>
+  <div class="cinema-layout">
+    <div class="screen">SCREEN THIS WAY</div>
+    <div class="seat-layout">
+      <div *ngFor="let row of seats; let rowIndex = index" class="seat-row">
+        <div class="row-label">{{ rows[rowIndex] }}</div>
+        <div
+          *ngFor="let seat of row"
+          class="seat"
+          [ngClass]="{
+            'seat--available': seat.status === 'available',
+            'seat--selected': seat.status === 'selected',
+            'seat--booked': seat.status === 'booked',
+            'seat--fast-selling': seat.status === 'fast-selling'
+          }"
+          [attr.data-seat-id]="seat.id"
+          [attr.title]="seat.id + ' - ₹' + seat.price"
+          (click)="selectSeat(seat.id)"
+        >
+          {{ seat.seatNumber }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-seat seat--available"></div>
+      <span>Available</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-seat seat--selected"></div>
+      <span>Selected</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-seat seat--booked"></div>
+      <span>Booked</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-seat seat--fast-selling"></div>
+      <span>Fast Selling</span>
+    </div>
+  </div>
+  <div class="booking-actions">
+    <div class="selected-seats-info">
+      <strong>Selected Seats: {{ selectedSeats.join(', ') || 'None' }}</strong>
+    </div>
+    <button
+      class="book-btn"
+      [disabled]="selectedSeats.length !== seatCount"
+      (click)="bookSeats()"
+    >
+      Book Now (₹{{ totalPrice }})
+    </button>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  </div>
+</div>
